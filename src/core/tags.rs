@@ -22,9 +22,6 @@ use crate::{
         }
     },
     helpers::{
-        palette::{
-            Theme
-        },
         colors::{
             ColorPicker
         }
@@ -36,7 +33,6 @@ pub struct Tags {
     pub colors: HashMap<u32, Color>,
     pub sorted: Vec<(u32, String)>,
     pub indices: Vec<usize>,
-    pub visible: bool
 }
 
 impl Default for Tags {
@@ -47,7 +43,6 @@ impl Default for Tags {
             colors: Default::default(),
             sorted: Default::default(),
             indices: Default::default(),
-            visible: Default::default(),
         }
     }
 }
@@ -84,27 +79,12 @@ impl Tags {
         // Build a lookup of tag aliases to positions in sorted aliases
         let mut sorted_time = self.sorted.clone();
         let index_map: std::collections::HashMap<u32, usize> = oids.get_sorted_aliases().iter().enumerate().map(|(i, &oidi)| (oidi, i)).collect();
+        
         // Sort the vector using the index map
-
         sorted_time.sort_by_key(|(oidi, _)| index_map.get(oidi).copied().unwrap_or(usize::MAX));
         self.indices = Vec::new();
         sorted_time.iter().for_each(|(oidi, _)| {
             self.indices.push(oids.get_sorted_aliases().iter().position(|o| oidi == o).unwrap_or(usize::MAX));
         });
     }
-
-    pub fn get_sorted_aliases(&self) -> &Vec<(u32, String)> {
-        &self.sorted
-    }
-
-    pub fn get_color(&self, theme: &Theme, tag_alias: &u32) -> Color {
-        *self.colors.get(tag_alias).unwrap_or(&theme.COLOR_TEXT)
-    }
-
-    pub fn is_local(&self, tag_name: &String) -> bool {
-        self.local
-            .values()
-            .any(|tags| tags.iter().any(|current_tag| current_tag.as_str() == tag_name))
-    }
-
 }

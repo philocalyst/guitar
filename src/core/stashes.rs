@@ -17,9 +17,6 @@ use ratatui::{
 #[rustfmt::skip]
 use crate::{
     helpers::{
-        palette::{
-            Theme
-        },
         colors::{
             ColorPicker
         }
@@ -54,9 +51,5 @@ impl Stashes {
         for (oidi, &lane_idx) in stashes_lanes.iter() {
             self.colors.insert(*oidi, color.borrow().get_lane(lane_idx));
         }
-    }
-
-    pub fn get_color(&self, theme: &Theme, stash_alias: &u32) -> Color {
-        *self.colors.get(stash_alias).unwrap_or(&theme.COLOR_TEXT)
     }
 }

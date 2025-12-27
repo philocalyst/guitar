@@ -542,7 +542,7 @@ pub fn render_message_range(
             }
 
             if oids.stashes.contains(&alias) {
-                spans.push(Span::styled("⊡ stash ", Style::default().fg(if let Some(color) = stashes_colors.get(&alias) {
+                spans.push(Span::styled(format!("{SYM_COMMIT_STASH} stash "), Style::default().fg(if let Some(color) = stashes_colors.get(&alias) {
                     *color
                 } else {
                     theme.COLOR_TEXT
