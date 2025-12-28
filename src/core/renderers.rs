@@ -459,10 +459,7 @@ pub fn render_sha_range(
                 Style::default().fg(theme.COLOR_GREY_700),
             )));
         } else {
-            lines.push(Line::from(Span::styled(
-                "",
-                Style::default().fg(theme.COLOR_GREY_500),
-            )));
+            lines.push(Line::from(""));
         }
     }
 

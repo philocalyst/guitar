@@ -5,7 +5,7 @@ use std::{
         HashMap
     }
 };
-use git2::StashFlags;
+use git2::{StashApplyOptions, StashFlags};
 #[rustfmt::skip]
 use git2::{
     Oid,
@@ -343,4 +343,32 @@ pub fn stash(
     )?;
 
     Ok(stash_index)
+}
+
+pub fn pop(
+    repo: &mut Repository,
+    target_oid: &Oid,
+    apply: bool
+) -> Result<(), git2::Error> {
+
+    let mut stash_index: Option<usize> = None;
+
+    repo.stash_foreach(|index, _message, oid| {
+        if oid == target_oid {
+            stash_index = Some(index);
+            false
+        } else {
+            true
+        }
+    })?;
+
+    if let Some(index) = stash_index {
+        if apply == true {
+            let mut opts = StashApplyOptions::new();
+            repo.stash_apply(index, Some(&mut opts))?;
+        }
+        repo.stash_drop(index)?;
+    }
+
+    Ok(())
 }

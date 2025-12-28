@@ -21,7 +21,7 @@ use ratatui::{
 use edtui::{
     EditorMode,
 };
-use crate::git::actions::commits::stash;
+use crate::{git::actions::commits::{pop, stash}};
 #[rustfmt::skip]
 use crate::{
     app::app::{
@@ -87,6 +87,8 @@ pub enum Command {
     SoloBranch,
     
     // Git
+    Drop,
+    Pop,
     Stash,
     Grep,
     Fetch,
@@ -151,6 +153,8 @@ impl App {
         map.insert(KeyBinding::new(Char('o'), KeyModifiers::NONE), Command::SoloBranch);
         
         // Git
+        map.insert(KeyBinding::new(Char('y'), KeyModifiers::NONE), Command::Drop);
+        map.insert(KeyBinding::new(Char('t'), KeyModifiers::NONE), Command::Pop);
         map.insert(KeyBinding::new(Char('e'), KeyModifiers::NONE), Command::Stash);
         map.insert(KeyBinding::new(Char('g'), KeyModifiers::NONE), Command::Grep);
         map.insert(KeyBinding::new(Char('f'), KeyModifiers::NONE), Command::Fetch);
@@ -353,6 +357,8 @@ impl App {
                 Command::SoloBranch => self.on_solo_branch(),
 
                 // Git
+                Command::Drop => self.on_drop(),
+                Command::Pop => self.on_pop(),
                 Command::Stash => self.on_stash(),
                 Command::Grep => self.on_grep(),
                 Command::Fetch => self.on_fetch(),
@@ -1061,6 +1067,36 @@ impl App {
             }
             _ => {}
         };
+    }
+
+    pub fn on_drop(&mut self) {
+        if self.viewport == Viewport::Graph && self.focus == Focus::Viewport {
+            let alias = self.oids.get_alias_by_idx(self.graph_selected);
+            if !self.oids.stashes.contains(&alias) { return }
+
+            let path = self.repo.path().to_path_buf();
+            let mut repo = Repository::open(path).unwrap();            
+            let oid = self.oids.get_oid_by_alias(alias);
+
+            // Due to incosistnent git2 api, stashing requires mutalbe repo reference, im too lazy 
+            pop(&mut repo, oid, false).unwrap();
+            self.reload();
+        }
+    }
+
+    pub fn on_pop(&mut self) {
+        if self.viewport == Viewport::Graph && self.focus == Focus::Viewport {
+            let alias = self.oids.get_alias_by_idx(self.graph_selected);
+            if !self.oids.stashes.contains(&alias) { return }
+
+            let path = self.repo.path().to_path_buf();
+            let mut repo = Repository::open(path).unwrap();            
+            let oid = self.oids.get_oid_by_alias(alias);
+
+            // Due to incosistnent git2 api, stashing requires mutalbe repo reference, im too lazy 
+            pop(&mut repo, oid, true).unwrap();
+            self.reload();
+        }
     }
 
     pub fn on_stash(&mut self) {
