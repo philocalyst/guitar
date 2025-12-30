@@ -187,7 +187,7 @@ impl Walker {
                 // Find the position of the parent in the current sorted batch
                 if let Some(pos) = sorted_batch.iter().position(|&a| a == parent_alias) {
                     // Insert the stash alias right after the parent
-                    sorted_batch.insert(pos - 1, stash_alias);
+                    sorted_batch.insert(if pos == 0 { 0 } else { pos - 1 }, stash_alias);
                 }
             }
         }
