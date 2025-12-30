@@ -125,7 +125,8 @@ pub enum Focus {
     ModalCreateBranch,
     ModalDeleteBranch,
     ModalGrep,
-    ModalTag
+    ModalTag,
+    ModalDeleteTag
 }
 
 #[derive(PartialEq, Eq)]
@@ -235,6 +236,9 @@ pub struct App {
 
     // Modal delete a branch
     pub modal_delete_branch_selected: i32,
+
+    // Modal delete a tag
+    pub modal_delete_tag_selected: i32,
 
     // Exit
     pub is_exit: bool,
@@ -350,6 +354,9 @@ impl App  {
             }
             Focus::ModalTag => {
                 self.draw_modal_tag(frame);
+            }
+            Focus::ModalDeleteTag => {
+                self.draw_modal_delete_tag(frame);
             }
             _ => {}
         }

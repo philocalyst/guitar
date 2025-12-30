@@ -180,6 +180,9 @@ impl Default for App {
             // Modal delete branch
             modal_delete_branch_selected: 0,
 
+            // Modal delete tag
+            modal_delete_tag_selected: 0,
+
             // Exit
             is_exit: false,   
         }

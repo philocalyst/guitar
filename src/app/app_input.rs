@@ -434,6 +434,15 @@ impl App {
                     }
                 }
             }
+            Focus::ModalDeleteTag => {
+                let alias = self.oids.get_alias_by_idx(self.graph_selected);
+                let tags = self.tags.local.get(&alias).cloned().unwrap_or_default();
+                let tag = tags.get(self.modal_delete_tag_selected as usize).unwrap();
+                untag(&self.repo, tag).unwrap();
+                self.modal_delete_tag_selected = 0;
+                self.focus = Focus::Viewport;
+                self.reload();
+            }
             Focus::StatusTop | Focus::StatusBottom => {
                 self.open_viewer();
                 self.focus = Focus::Viewport;
@@ -673,6 +682,15 @@ impl App {
                     self.modal_delete_branch_selected - 1
                 };
             }
+            Focus::ModalDeleteTag => {
+                let alias = self.oids.get_alias_by_idx(self.graph_selected);
+                let tags = self.tags.local.get(&alias).cloned().unwrap_or_default();
+                self.modal_delete_tag_selected = if self.modal_delete_tag_selected - 1 < 0 {
+                    tags.len() as i32 - 1
+                } else {
+                    self.modal_delete_tag_selected - 1
+                };
+            }
             _ => {}
         }
     }
@@ -742,11 +760,20 @@ impl App {
                 let length = match get_current_branch(&self.repo) {
                     Some(current) => branches.iter().filter(|branch| current != **branch).count(),
                     None => branches.len()
-                };                
+                };
                 self.modal_delete_branch_selected = if self.modal_delete_branch_selected + 1 > length as i32 - 1 {
                     0
                 } else {
                     self.modal_delete_branch_selected + 1
+                };
+            }
+            Focus::ModalDeleteTag => {
+                let alias = self.oids.get_alias_by_idx(self.graph_selected);
+                let tags = self.tags.local.get(&alias).cloned().unwrap_or_default();
+                self.modal_delete_tag_selected = if self.modal_delete_tag_selected + 1 > tags.len() as i32 - 1 {
+                    0
+                } else {
+                    self.modal_delete_tag_selected + 1
                 };
             }
             _ => {}
@@ -1318,7 +1345,7 @@ impl App {
                                         self.reload();
                                     }
                                     _ => {
-                                        // self.focus = Focus::ModalDeleteBranch;
+                                        self.focus = Focus::ModalDeleteTag;
                                     }
                                 }
                             }
