@@ -54,6 +54,7 @@ pub enum Command {
     DeleteABranch,
     Tag,
     Untag,
+    Cherrypick,
     
     // Layout
     GoBack,
@@ -110,6 +111,7 @@ fn default_keymap() -> IndexMap<KeyBinding, Command> {
     map.insert(KeyBinding::new(Char('d'), KeyModifiers::NONE), Command::DeleteABranch);
     map.insert(KeyBinding::new(Char('/'), KeyModifiers::NONE), Command::Tag);
     map.insert(KeyBinding::new(Char('?'), KeyModifiers::NONE), Command::Untag);
+    map.insert(KeyBinding::new(Char(']'), KeyModifiers::NONE), Command::Cherrypick);
 
     // Layout
     map.insert(KeyBinding::new(Esc, KeyModifiers::NONE), Command::GoBack);

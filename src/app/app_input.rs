@@ -18,7 +18,7 @@ use ratatui::{
 use edtui::{
     EditorMode,
 };
-use crate::{git::actions::commits::{pop, stash, tag, untag}, helpers::keymap::{Command, KeyBinding, load_or_init_keymap}};
+use crate::{git::actions::commits::{cherry_pick_commit, pop, stash, tag, untag}, helpers::keymap::{Command, KeyBinding, load_or_init_keymap}};
 #[rustfmt::skip]
 use crate::{
     app::app::{
@@ -315,6 +315,7 @@ impl App {
                 Command::DeleteABranch => self.on_delete_branch(),
                 Command::Tag => self.on_tag(),
                 Command::Untag => self.on_untag(),
+                Command::Cherrypick => self.on_cherrypick(),
                 
                 // Layout
                 Command::GoBack => self.on_go_back(),
@@ -1353,6 +1354,16 @@ impl App {
                     }
                     _ => {}
                 }
+            }
+        }
+    }
+
+    pub fn on_cherrypick(&mut self) {
+        if self.viewport == Viewport::Graph && self.focus == Focus::Viewport {
+            if self.graph_selected != 0 {
+                let oid = self.oids.get_oid_by_idx(if self.graph_selected == 0 { 1 } else { self.graph_selected });
+                cherry_pick_commit(&self.repo, *oid, Some("message"), true).unwrap();
+                self.reload();
             }
         }
     }
