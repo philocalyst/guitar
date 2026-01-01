@@ -13,8 +13,8 @@
  .?!^^^!5G7                                                          YB5      
  .!?JJJ?!:                                                           75?      
   </br>
-Beautiful and cozy terminal-based Git client
- for fun, productivity, and pure Rust joy.  
+terminal based cross-platform git client 
+made with ♡ by @asinglebit
   </pre>
 </div>
 
@@ -41,6 +41,7 @@ I needed a git client that would make it easy for me to understand where I am to
 - **Cherrypicking** – Happy path only for now.  
 - **Opinionated** – Fetches prune branches and pull tags. Pushes are always hard and push local tags.
 - **Keymap** – Keymap is completely customizable and is serilazied into `~/.config/guitar` folder (depending on your OS).
+- **Heatmap** – Render a github-style heatmap of the repository.
 - **Layout** – Somewhat primitive, also serilazied into `~/.config/guitar` folder (depending on your OS).
 - **Terminal-friendly colors** – Easy on the eyes for long coding sessions with three builtin themes. 
 
@@ -54,11 +55,10 @@ I needed a git client that would make it easy for me to understand where I am to
 
 - **Auth** – Comprehensive auth management.
 - **Keymaps** – In-app keymap configuration.
-- **Themes** – Customizable themes.
+- **Themes** – Custom themes.
 - **Recent repos** – List of most recent repositories.
-- **Heatmap** – Render a github-style heatmap of the repository.
 
-### Keyboard mappings
+### Default keyboard mappings (they suck for now)
 
 <div align="center">
 <pre>
