@@ -5,6 +5,12 @@ use serde::Serialize;
 use std::fs;
 use std::path::Path;
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum InputMode {
+    Normal,
+    Git,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Command {
 
@@ -63,7 +69,10 @@ pub enum Command {
     Reload,
 }
 
-fn default_keymap() -> IndexMap<KeyBinding, Command> {
+pub type ModeKeymap = IndexMap<KeyBinding, Command>;
+pub type Keymaps = IndexMap<InputMode, ModeKeymap>;
+
+fn default_normal_keymap() -> IndexMap<KeyBinding, Command> {
     let mut map = IndexMap::new();
  
     // User Interface
@@ -109,6 +118,16 @@ fn default_keymap() -> IndexMap<KeyBinding, Command> {
     map.insert(KeyBinding::new(Char('f'), KeyModifiers::CONTROL), Command::Find);
     map.insert(KeyBinding::new(Char(' '), KeyModifiers::NONE), Command::SoloBranch);
     map.insert(KeyBinding::new(Char('t'), KeyModifiers::NONE), Command::ToggleBranch);
+    
+    map
+}
+
+fn default_git_keymap() -> IndexMap<KeyBinding, Command> {
+    let mut map = IndexMap::new();
+
+    // User Interface
+    map.insert(KeyBinding::new(Char('q'), KeyModifiers::NONE), Command::Exit);
+    map.insert(KeyBinding::new(Char('c'), KeyModifiers::CONTROL), Command::Exit);
 
     // Git
     map.insert(KeyBinding::new(Char('y'), KeyModifiers::NONE), Command::Drop);
@@ -132,6 +151,15 @@ fn default_keymap() -> IndexMap<KeyBinding, Command> {
     map
 }
 
+fn default_keymaps() -> Keymaps {
+    let mut maps = IndexMap::new();
+
+    maps.insert(InputMode::Normal, default_normal_keymap());
+    maps.insert(InputMode::Git, default_git_keymap());
+
+    maps
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Hash, )]
 pub struct KeyBinding {
     pub code: KeyCode,
@@ -146,7 +174,8 @@ impl KeyBinding {
 
 #[derive(Serialize, Deserialize)]
 struct KeymapConfig {
-    bindings: Vec<KeyBindingEntry>,
+    normal: Vec<KeyBindingEntry>,
+    git: Vec<KeyBindingEntry>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -263,22 +292,34 @@ pub fn parse_modifiers(mods: &[String]) -> Result<KeyModifiers, String> {
     Ok(km)
 }
 
-fn keymap_to_config(map: &IndexMap<KeyBinding, Command>) -> KeymapConfig {
-    KeymapConfig {
-        bindings: map.iter().map(|(kb, cmd)| {
-            KeyBindingEntry {
-                key: keycode_to_string(kb.code),
-                modifiers: modifiers_to_vec(kb.modifiers),
-                command: cmd.clone(),
-            }
-        }).collect(),
-    }
+fn keymap_entries(map: &ModeKeymap) -> Vec<KeyBindingEntry> {
+    map.iter()
+        .map(|(kb, cmd)| KeyBindingEntry {
+            key: keycode_to_string(kb.code),
+            modifiers: modifiers_to_vec(kb.modifiers),
+            command: cmd.clone(),
+        })
+        .collect()
 }
 
-fn config_to_keymap(cfg: KeymapConfig) -> Result<IndexMap<KeyBinding, Command>, String> {
+fn keymaps_to_config(maps: &Keymaps) -> KeymapConfig {
+    let normal = maps
+        .get(&InputMode::Normal)
+        .map(|m| keymap_entries(m))
+        .unwrap_or_default();
+
+    let git = maps
+        .get(&InputMode::Git)
+        .map(|m| keymap_entries(m))
+        .unwrap_or_default();
+
+    KeymapConfig { normal, git }
+}
+
+fn entries_to_keymap(entries: Vec<KeyBindingEntry>) -> Result<ModeKeymap, String> {
     let mut map = IndexMap::new();
 
-    for entry in cfg.bindings {
+    for entry in entries {
         let key = parse_key(&entry.key)?;
         let mods = parse_modifiers(&entry.modifiers)?;
         map.insert(KeyBinding::new(key, mods), entry.command);
@@ -287,35 +328,45 @@ fn config_to_keymap(cfg: KeymapConfig) -> Result<IndexMap<KeyBinding, Command>, 
     Ok(map)
 }
 
-fn load_keymap_from_disk(path: &Path) -> Result<IndexMap<KeyBinding, Command>, Box<dyn std::error::Error>> {
-    let text = fs::read_to_string(path)?;
-    let cfg: KeymapConfig = toml::from_str(&text)?;
-    Ok(config_to_keymap(cfg)?)
+fn config_to_keymaps(cfg: KeymapConfig) -> Result<Keymaps, String> {
+    let mut maps = IndexMap::new();
+
+    maps.insert(InputMode::Normal, entries_to_keymap(cfg.normal)?);
+    maps.insert(InputMode::Git, entries_to_keymap(cfg.git)?);
+
+    Ok(maps)
 }
 
-fn save_keymap_to_disk(
+fn load_keymaps_from_disk(
     path: &Path,
-    map: &IndexMap<KeyBinding, Command>,
+) -> Result<Keymaps, Box<dyn std::error::Error>> {
+    let text = fs::read_to_string(path)?;
+    let cfg: KeymapConfig = toml::from_str(&text)?;
+    Ok(config_to_keymaps(cfg)?)
+}
+
+fn save_keymaps_to_disk(
+    path: &Path,
+    maps: &Keymaps,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    let cfg = keymap_to_config(map);
+    let cfg = keymaps_to_config(maps);
     let toml = toml::to_string_pretty(&cfg)?;
     fs::create_dir_all(path.parent().unwrap())?;
     fs::write(path, toml)?;
     Ok(())
 }
 
-pub fn load_or_init_keymap() -> IndexMap<KeyBinding, Command> {
-    
+pub fn load_or_init_keymaps() -> Keymaps {
     let mut pathbuf = dirs::config_dir().unwrap();
     pathbuf.push("guitar");
     pathbuf.push("keymap.toml");
     let path = pathbuf.as_path();
 
-    match load_keymap_from_disk(path) {
-        Ok(map) => map,
+    match load_keymaps_from_disk(path) {
+        Ok(maps) => maps,
         Err(_) => {
-            let defaults = default_keymap();
-            let _ = save_keymap_to_disk(path, &defaults);
+            let defaults = default_keymaps();
+            let _ = save_keymaps_to_disk(path, &defaults);
             defaults
         }
     }

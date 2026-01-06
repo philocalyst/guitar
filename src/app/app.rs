@@ -12,7 +12,7 @@ use crate::{
         diffs::get_filenames_diff_at_workdir,
         helpers::{FileChange, UncommittedChanges},
     },
-    helpers::{colors::ColorPicker, palette::*, spinner::Spinner},
+    helpers::{colors::ColorPicker, keymap::InputMode, palette::*, spinner::Spinner},
 };
 use crate::{
     app::input::TextInput,
@@ -86,11 +86,11 @@ pub struct App {
     pub path: String,
     pub repo: Rc<Repository>,
     pub spinner: Spinner,
-    pub keymap: IndexMap<KeyBinding, Command>,
+    pub keymaps: IndexMap<InputMode, IndexMap<KeyBinding, Command>>,
+    pub mode: InputMode,
     pub last_input_direction: Option<Direction>,
     pub theme: Theme,
     pub heatmap: [[usize; WEEKS]; DAYS],
-    pub is_leader: bool,
 
     // User
     pub name: String,

@@ -1,4 +1,5 @@
 use crate::helpers::heatmap::heat_cell;
+use crate::helpers::keymap::InputMode;
 use crate::helpers::palette::*;
 use crate::{
     app::app::{App, Direction, Focus},
@@ -118,17 +119,35 @@ impl App {
         ]).centered());
         lines.push(Line::default());
 
-        render_keybindings(&self.theme, &self.keymap, max_text_width / 2).iter().enumerate().for_each(|(idx, kb_line)| {
-            let spans: Vec<Span> = kb_line.clone().spans.iter().map(|span| {
-                let mut style = span.style;
-                if idx % 2 == 0 { style = style.bg(self.theme.COLOR_GREY_900); }
-                Span::styled(span.content.clone(), style)
-            }).collect();
-            lines.push(Line::from(spans).centered());
-            
-            // Record the line index as selectable
-            self.settings_selections.push(lines.len() - 1);
-        });
+        lines.push(Line::from(Span::styled("Normal Mode", Style::default().fg(self.theme.COLOR_TEXT))).centered());
+        if let Some(mode_keymap) = self.keymaps.get(&InputMode::Normal) {
+            render_keybindings(&self.theme, &mode_keymap, max_text_width / 2).iter().enumerate().for_each(|(idx, kb_line)| {
+                let spans: Vec<Span> = kb_line.clone().spans.iter().map(|span| {
+                    let mut style = span.style;
+                    if idx % 2 == 0 { style = style.bg(self.theme.COLOR_GREY_900); }
+                    Span::styled(span.content.clone(), style)
+                }).collect();
+                lines.push(Line::from(spans).centered());
+                
+                // Record the line index as selectable
+                self.settings_selections.push(lines.len() - 1);
+            });
+        }
+
+        lines.push(Line::from(Span::styled("Git Mode", Style::default().fg(self.theme.COLOR_TEXT))).centered());
+        if let Some(mode_keymap) = self.keymaps.get(&InputMode::Git) {
+            render_keybindings(&self.theme, &mode_keymap, max_text_width / 2).iter().enumerate().for_each(|(idx, kb_line)| {
+                let spans: Vec<Span> = kb_line.clone().spans.iter().map(|span| {
+                    let mut style = span.style;
+                    if idx % 2 == 0 { style = style.bg(self.theme.COLOR_GREY_900); }
+                    Span::styled(span.content.clone(), style)
+                }).collect();
+                lines.push(Line::from(spans).centered());
+                
+                // Record the line index as selectable
+                self.settings_selections.push(lines.len() - 1);
+            });
+        }        
 
         // Get vertical dimensions
         let total_lines = lines.len();

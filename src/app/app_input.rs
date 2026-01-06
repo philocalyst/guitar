@@ -7,11 +7,11 @@ use crate::{
         },
         queries::{commits::get_current_branch, diffs::get_filenames_diff_at_oid},
     },
-    helpers::palette::Theme,
+    helpers::{keymap::InputMode, palette::Theme},
 };
 use crate::{
     git::actions::commits::{cherry_pick_commit, pop, stage_file, stash, tag, unstage_file, untag},
-    helpers::keymap::{Command, KeyBinding, load_or_init_keymap},
+    helpers::keymap::{Command, KeyBinding, load_or_init_keymaps},
 };
 use git2::{Oid, Repository};
 use ratatui::crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
@@ -21,7 +21,7 @@ use std::path::Path;
 impl App {
 
     pub fn load_keymap(&mut self) {
-        self.keymap = load_or_init_keymap();
+        self.keymaps = load_or_init_keymaps();
     }
     
     fn get_focusable_panes(&self) -> Vec<Focus> {
@@ -63,13 +63,8 @@ impl App {
     pub fn handle_key_event(&mut self, key_event: KeyEvent) {
 
         let key_binding = KeyBinding::new(key_event.code, key_event.modifiers);
+        let current_mode = self.mode.clone();
 
-        // Leader key
-        if self.keymap.get(&key_binding) == Some(&Command::Leader) {
-            self.is_leader = true;
-            return;
-        }
-        
         // Handle text editing within modals
         match self.focus {
             Focus::ModalCommit => {
@@ -199,40 +194,8 @@ impl App {
             _ => {}
         }
         
-        if self.is_leader {
-            
-            if let Some(cmd) = self.keymap.get(&key_binding) {
-                match cmd {
-
-                    // Git
-                    Command::Drop => self.on_drop(),
-                    Command::Pop => self.on_pop(),
-                    Command::Stash => self.on_stash(),
-                    Command::FetchAll => self.on_fetch_all(),
-                    Command::Checkout => self.on_checkout(),
-                    Command::HardReset => self.on_hard_reset(),
-                    Command::MixedReset => self.on_mixed_reset(),
-                    Command::Unstage => self.on_unstage(),
-                    Command::Stage => self.on_stage(),
-                    Command::Commit => self.on_commit(),
-                    Command::ForcePush => self.on_force_push(),
-                    Command::CreateBranch => self.on_create_branch(),
-                    Command::DeleteBranch => self.on_delete_branch(),
-                    Command::Tag => self.on_tag(),
-                    Command::Untag => self.on_untag(),
-                    Command::Cherrypick => self.on_cherrypick(),
-                    Command::Reload => self.on_reload(),
-
-                    // Rest
-                    _ => {}
-                }
-            }
-
-            // Reset leader key
-            self.is_leader = false;
-
-        } else {
-            if let Some(cmd) = self.keymap.get(&key_binding) {
+        if let Some(mode_map) = self.keymaps.get(&self.mode) {
+            if let Some(cmd) = mode_map.get(&key_binding) {
                 match cmd {
                     
                     // User Interface
@@ -248,6 +211,7 @@ impl App {
                     Command::ToggleInspector => self.on_toggle_inspector(),
                     Command::ToggleShas => self.on_toggle_shas(),
                     Command::ToggleSettings => self.on_toggle_settings(),
+                    Command::Leader => self.on_leader(),
                     Command::Exit => self.on_exit(),
                     
                     // Lists
@@ -269,11 +233,36 @@ impl App {
                     Command::SoloBranch => self.on_solo_branch(),
                     Command::ToggleBranch => self.on_toggle_branch(),
 
-                    // Rest
-                    _ => {}
+                    // Git
+                    Command::Drop => self.on_drop(),
+                    Command::Pop => self.on_pop(),
+                    Command::Stash => self.on_stash(),
+                    Command::FetchAll => self.on_fetch_all(),
+                    Command::Checkout => self.on_checkout(),
+                    Command::HardReset => self.on_hard_reset(),
+                    Command::MixedReset => self.on_mixed_reset(),
+                    Command::Unstage => self.on_unstage(),
+                    Command::Stage => self.on_stage(),
+                    Command::Commit => self.on_commit(),
+                    Command::ForcePush => self.on_force_push(),
+                    Command::CreateBranch => self.on_create_branch(),
+                    Command::DeleteBranch => self.on_delete_branch(),
+                    Command::Tag => self.on_tag(),
+                    Command::Untag => self.on_untag(),
+                    Command::Cherrypick => self.on_cherrypick(),
+                    Command::Reload => self.on_reload(),
                 }
             }
         }
+
+        // Reset mode to normal
+        if current_mode == InputMode::Git {
+            self.mode = InputMode::Normal;
+        }
+    }
+
+    pub fn on_leader(&mut self) {
+        self.mode = InputMode::Git;
     }
 
     pub fn on_select(&mut self) {

@@ -1,3 +1,4 @@
+use crate::helpers::keymap::InputMode;
 use crate::{
     app::input::TextInput, core::stashes::Stashes, git::queries::helpers::commits_per_day,
     helpers::heatmap::build_heatmap,
@@ -45,11 +46,11 @@ impl Default for App {
             path: absolute_path.display().to_string(),
             repo,
             spinner: Spinner::new(),
-            keymap: IndexMap::new(),
+            keymaps: IndexMap::new(),
+            mode: InputMode::Normal,
             last_input_direction: None,
             theme,
             heatmap,
-            is_leader: false,
 
             // User
             name: String::new(),
