@@ -124,6 +124,14 @@ fn default_normal_keymap() -> IndexMap<KeyBinding, Command> {
     map.insert(KeyBinding::new(Char(' '), KeyModifiers::NONE), Command::SoloBranch);
     map.insert(KeyBinding::new(Char('t'), KeyModifiers::NONE), Command::ToggleBranch);
     
+    // Git  
+    map.insert(KeyBinding::new(Char('f'), KeyModifiers::NONE), Command::FetchAll);
+    map.insert(KeyBinding::new(Char('u'), KeyModifiers::NONE), Command::Unstage);
+    map.insert(KeyBinding::new(Char('s'), KeyModifiers::NONE), Command::Stage);
+    map.insert(KeyBinding::new(Char('a'), KeyModifiers::NONE), Command::Commit);
+    map.insert(KeyBinding::new(Char('b'), KeyModifiers::NONE), Command::CreateBranch);
+    map.insert(KeyBinding::new(Char('/'), KeyModifiers::NONE), Command::Tag);
+    
     map
 }
 
@@ -159,21 +167,23 @@ fn default_action_keymap() -> IndexMap<KeyBinding, Command> {
     map.insert(KeyBinding::new(Home, KeyModifiers::NONE), Command::GoToBeginning);
     map.insert(KeyBinding::new(End, KeyModifiers::NONE), Command::GoToEnd);
 
-    // Git
-    map.insert(KeyBinding::new(Char('y'), KeyModifiers::NONE), Command::Drop);
-    map.insert(KeyBinding::new(Char('t'), KeyModifiers::NONE), Command::Pop);
-    map.insert(KeyBinding::new(Char('e'), KeyModifiers::NONE), Command::Stash);
+    // Git    
     map.insert(KeyBinding::new(Char('f'), KeyModifiers::NONE), Command::FetchAll);
-    map.insert(KeyBinding::new(Char('c'), KeyModifiers::NONE), Command::Checkout);
-    map.insert(KeyBinding::new(Char('h'), KeyModifiers::NONE), Command::HardReset);
-    map.insert(KeyBinding::new(Char('m'), KeyModifiers::NONE), Command::MixedReset);
     map.insert(KeyBinding::new(Char('u'), KeyModifiers::NONE), Command::Unstage);
     map.insert(KeyBinding::new(Char('s'), KeyModifiers::NONE), Command::Stage);
     map.insert(KeyBinding::new(Char('a'), KeyModifiers::NONE), Command::Commit);
-    map.insert(KeyBinding::new(Char('p'), KeyModifiers::NONE), Command::ForcePush);
     map.insert(KeyBinding::new(Char('b'), KeyModifiers::NONE), Command::CreateBranch);
-    map.insert(KeyBinding::new(Char('d'), KeyModifiers::NONE), Command::DeleteBranch);
     map.insert(KeyBinding::new(Char('/'), KeyModifiers::NONE), Command::Tag);
+
+    // Git, but dangerous
+    map.insert(KeyBinding::new(Char('y'), KeyModifiers::NONE), Command::Drop);
+    map.insert(KeyBinding::new(Char('t'), KeyModifiers::NONE), Command::Pop);
+    map.insert(KeyBinding::new(Char('e'), KeyModifiers::NONE), Command::Stash);
+    map.insert(KeyBinding::new(Char('c'), KeyModifiers::NONE), Command::Checkout);
+    map.insert(KeyBinding::new(Char('h'), KeyModifiers::NONE), Command::HardReset);
+    map.insert(KeyBinding::new(Char('m'), KeyModifiers::NONE), Command::MixedReset);
+    map.insert(KeyBinding::new(Char('p'), KeyModifiers::NONE), Command::ForcePush);
+    map.insert(KeyBinding::new(Char('d'), KeyModifiers::NONE), Command::DeleteBranch);
     map.insert(KeyBinding::new(Char('?'), KeyModifiers::NONE), Command::Untag);
     map.insert(KeyBinding::new(Char(']'), KeyModifiers::NONE), Command::Cherrypick);
     
@@ -232,6 +242,36 @@ pub fn keycode_to_string(code: KeyCode) -> String {
         KeyCode::Insert => "Insert".into(),
         KeyCode::F(n) => format!("F({})", n),
         KeyCode::Char(c) => format!("Char({})", c),
+        KeyCode::Null => "Null".into(),
+        KeyCode::Esc => "Esc".into(),
+        KeyCode::CapsLock => "CapsLock".into(),
+        KeyCode::ScrollLock => "ScrollLock".into(),
+        KeyCode::NumLock => "NumLock".into(),
+        KeyCode::PrintScreen => "PrintScreen".into(),
+        KeyCode::Pause => "Pause".into(),
+        _ => "Unsupported".into(),
+    }
+}
+
+pub fn keycode_to_visual_string(code: KeyCode) -> String {
+    match code {
+        KeyCode::Backspace => "Backspace".into(),
+        KeyCode::Enter => "Enter".into(),
+        KeyCode::Left => "Left".into(),
+        KeyCode::Right => "Right".into(),
+        KeyCode::Up => "Up".into(),
+        KeyCode::Down => "Down".into(),
+        KeyCode::Home => "Home".into(),
+        KeyCode::End => "End".into(),
+        KeyCode::PageUp => "PageUp".into(),
+        KeyCode::PageDown => "PageDown".into(),
+        KeyCode::Tab => "Tab".into(),
+        KeyCode::BackTab => "BackTab".into(),
+        KeyCode::Delete => "Delete".into(),
+        KeyCode::Insert => "Insert".into(),
+        KeyCode::F(n) => format!("F({})", n),
+        KeyCode::Char(' ') => "Space".into(),
+        KeyCode::Char(c) => format!("{c}"),
         KeyCode::Null => "Null".into(),
         KeyCode::Esc => "Esc".into(),
         KeyCode::CapsLock => "CapsLock".into(),

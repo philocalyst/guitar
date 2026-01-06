@@ -2,7 +2,7 @@ use im::{HashSet, Vector};
 use indexmap::IndexMap;
 use std::{cell::RefCell, collections::HashMap, rc::Rc};
 use git2::Repository;
-use crate::helpers::keymap::{Command, KeyBinding, keycode_to_string};
+use crate::helpers::keymap::{Command, KeyBinding, keycode_to_visual_string};
 use crate::{
     core::{
         chunk::{Chunk, NONE},
@@ -600,7 +600,7 @@ pub fn render_keybindings(theme: &Theme, keymap: &IndexMap<KeyBinding, Command>,
         if !key_string.is_empty() {
             key_string = format!("{} + ", key_string);
         }
-        key_string.push_str(&keycode_to_string(kb.code));
+        key_string.push_str(&keycode_to_visual_string(kb.code));
 
         // Command string
         let mut cmd_string = format!("{:?}", cmd);

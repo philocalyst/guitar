@@ -65,7 +65,7 @@ I needed a git client that would make it easy for me to understand where I am to
 
 ### Default keyboard mappings (they suck for now)
 
-You will probably need to change the configs to your taste, for optimal experience, especially on MacOS due to Option/Command keys. I will version configs properly in the future.
+You will probably need to change the configs to your taste, for optimal experience, especially on MacOS due to Option/Command keys. I will version configs properly in the future. Dangerous actions, like resetting and force pushing are now behind `Action Mode` key. You need to enter the `Action Mode` first, and then next shortcut you commit will be picked from the `Action Mode` key pool.
 
 <div align="center">
 <pre>
@@ -83,46 +83,53 @@ shortcuts / normal mode:
 
 Focus Next Pane                                                     Tab
 Focus Next Pane                                                   Right
-Focus Next Pane                                                 Char(l)
+Focus Next Pane                                                       l
 Focus Previous Pane                                     Shift + BackTab
 Focus Previous Pane                                                Left
-Focus Previous Pane                                             Char(h)
+Focus Previous Pane                                                   h
 Select                                                            Enter
 Back                                                                Esc
-Minimize                                                        Char(.)
-Toggle Branches                                                 Char(1)
-Toggle Tags                                                     Char(2)
-Toggle Stashes                                                  Char(3)
-Toggle Status                                                   Char(4)
-Toggle Inspector                                                Char(5)
-Toggle Shas                                                     Char(6)
+Minimize                                                              .
+Toggle Branches                                                       1
+Toggle Tags                                                           2
+Toggle Stashes                                                        3
+Toggle Status                                                         4
+Toggle Inspector                                                      5
+Toggle Shas                                                           6
 Toggle Settings                                                    F(1)
-Action mode                                              Ctrl + Char( )
-Exit                                                            Char(q)
-Exit                                                     Ctrl + Char(c)
+Action mode                                                Ctrl + Space
+Exit                                                                  q
+Exit                                                           Ctrl + c
 Page Up                                                          PageUp
 Page Down                                                      PageDown
-Scroll Up                                                       Char(k)
-Scroll Down                                                     Char(j)
+Scroll Up                                                             k
+Scroll Down                                                           j
 Scroll Up                                                            Up
 Scroll Down                                                        Down
-Scroll Up Half                                     Ctrl + Alt + Char(k)
-Scroll Down Half                                   Ctrl + Alt + Char(j)
+Scroll Up Half                                           Ctrl + Alt + k
+Scroll Down Half                                         Ctrl + Alt + j
 Scroll Up Half                                          Ctrl + Alt + Up
 Scroll Down Half                                      Ctrl + Alt + Down
 Go To Beginning                                                    Home
 Go To End                                                           End
-Scroll Up Branch                                         Ctrl + Char(k)
-Scroll Down Branch                                       Ctrl + Char(j)
+Scroll Up Branch                                               Ctrl + k
+Scroll Down Branch                                             Ctrl + j
 Scroll Up Branch                                              Ctrl + Up
 Scroll Down Branch                                          Ctrl + Down
-Scroll Up Commit                                          Alt + Char(k)
-Scroll Down Commit                                        Alt + Char(j)
+Scroll Up Commit                                                Alt + k
+Scroll Down Commit                                              Alt + j
 Scroll Up Commit                                               Alt + Up
 Scroll Down Commit                                           Alt + Down
-Find                                                     Ctrl + Char(f)
-Solo Branch                                                     Char( )
-Toggle Branch                                                   Char(t)
+Find                                                           Ctrl + f
+Solo Branch                                                       Space
+Toggle Branch                                                         t
+Fetch All                                                             f
+Unstage                                                               u
+Stage                                                                 s
+Commit                                                                a
+Create Branch                                                         b
+Tag                                                                   /
+Reload                                                                r
                                                                        
 shortcuts / action mode:                                                  
                                                                        
@@ -132,16 +139,16 @@ Focus Next Pane                                                   Right
 Focus Previous Pane                                                Left
 Select                                                            Enter
 Back                                                                Esc
-Minimize                                                        Char(.)
-Toggle Branches                                                 Char(1)
-Toggle Tags                                                     Char(2)
-Toggle Stashes                                                  Char(3)
-Toggle Status                                                   Char(4)
-Toggle Inspector                                                Char(5)
-Toggle Shas                                                     Char(6)
+Minimize                                                              .
+Toggle Branches                                                       1
+Toggle Tags                                                           2
+Toggle Stashes                                                        3
+Toggle Status                                                         4
+Toggle Inspector                                                      5
+Toggle Shas                                                           6
 Toggle Settings                                                    F(1)
-Exit                                                            Char(q)
-Exit                                                     Ctrl + Char(c)
+Exit                                                                  q
+Exit                                                           Ctrl + c
 Page Up                                                          PageUp
 Page Down                                                      PageDown
 Scroll Up                                                            Up
@@ -150,23 +157,23 @@ Scroll Up Half                                          Ctrl + Alt + Up
 Scroll Down Half                                      Ctrl + Alt + Down
 Go To Beginning                                                    Home
 Go To End                                                           End
-Drop                                                            Char(y)
-Pop                                                             Char(t)
-Stash                                                           Char(e)
-Fetch All                                                       Char(f)
-Checkout                                                        Char(c)
-Hard Reset                                                      Char(h)
-Mixed Reset                                                     Char(m)
-Unstage                                                         Char(u)
-Stage                                                           Char(s)
-Commit                                                          Char(a)
-Force Push                                                      Char(p)
-Create Branch                                                   Char(b)
-Delete Branch                                                   Char(d)
-Tag                                                             Char(/)
-Untag                                                           Char(?)
-Cherrypick                                                      Char(])
-Reload                                                          Char(r)
+Drop                                                                  y
+Pop                                                                   t
+Stash                                                                 e
+Fetch All                                                             f
+Checkout                                                              c
+Hard Reset                                                            h
+Mixed Reset                                                           m
+Unstage                                                               u
+Stage                                                                 s
+Commit                                                                a
+Force Push                                                            p
+Create Branch                                                         b
+Delete Branch                                                         d
+Tag                                                                   /
+Untag                                                                 ?
+Cherrypick                                                            ]
+Reload                                                                r
 
 </pre>
 </div>
