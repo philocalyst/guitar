@@ -65,6 +65,8 @@ I needed a git client that would make it easy for me to understand where I am to
 
 ### Default keyboard mappings (they suck for now)
 
+You will probably need to change the configs to your taste, for optimal experience, especially on MacOS due to Option/Command keys. I will version configs properly in the future.
+
 <div align="center">
 <pre>
 ╭─────────────────────────────────────────────────────────────────────╮

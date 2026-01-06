@@ -95,6 +95,7 @@ fn default_normal_keymap() -> IndexMap<KeyBinding, Command> {
     map.insert(KeyBinding::new(Char(' '), KeyModifiers::CONTROL), Command::ActionMode);
     map.insert(KeyBinding::new(Char('q'), KeyModifiers::NONE), Command::Exit);
     map.insert(KeyBinding::new(Char('c'), KeyModifiers::CONTROL), Command::Exit);
+    map.insert(KeyBinding::new(Char('r'), KeyModifiers::NONE), Command::Reload);
     
     // Lists
     map.insert(KeyBinding::new(PageUp, KeyModifiers::NONE), Command::PageUp);
@@ -146,6 +147,7 @@ fn default_action_keymap() -> IndexMap<KeyBinding, Command> {
     map.insert(KeyBinding::new(F(1), KeyModifiers::NONE), Command::ToggleSettings);
     map.insert(KeyBinding::new(Char('q'), KeyModifiers::NONE), Command::Exit);
     map.insert(KeyBinding::new(Char('c'), KeyModifiers::CONTROL), Command::Exit);
+    map.insert(KeyBinding::new(Char('r'), KeyModifiers::NONE), Command::Reload);
 
     // Lists
     map.insert(KeyBinding::new(PageUp, KeyModifiers::NONE), Command::PageUp);
@@ -174,7 +176,6 @@ fn default_action_keymap() -> IndexMap<KeyBinding, Command> {
     map.insert(KeyBinding::new(Char('/'), KeyModifiers::NONE), Command::Tag);
     map.insert(KeyBinding::new(Char('?'), KeyModifiers::NONE), Command::Untag);
     map.insert(KeyBinding::new(Char(']'), KeyModifiers::NONE), Command::Cherrypick);
-    map.insert(KeyBinding::new(Char('r'), KeyModifiers::NONE), Command::Reload);
     
     map
 }
