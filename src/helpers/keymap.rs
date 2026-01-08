@@ -74,6 +74,7 @@ pub type Keymaps = IndexMap<InputMode, ModeKeymap>;
 fn default_normal_keymap() -> IndexMap<KeyBinding, Command> {
     let mut map = IndexMap::new();
 
+
     // Vim-style scope navigation: h=widen scope (back), l=narrow scope (select)
     // This creates a horizontal mental model where h goes "out" and l goes "in"
     map.insert(
@@ -115,6 +116,7 @@ fn default_normal_keymap() -> IndexMap<KeyBinding, Command> {
     map.insert(
         KeyBinding::new(Char('j'), KeyModifiers::NONE),
         Command::ScrollDown,
+
     );
     map.insert(
         KeyBinding::new(Char('k'), KeyModifiers::NONE),
@@ -161,6 +163,7 @@ fn default_normal_keymap() -> IndexMap<KeyBinding, Command> {
         Command::GoToBeginning,
     );
     map.insert(KeyBinding::new(End, KeyModifiers::NONE), Command::GoToEnd);
+
 
     // Vim-style search: '/' for find/search
     map.insert(
@@ -240,6 +243,7 @@ fn default_normal_keymap() -> IndexMap<KeyBinding, Command> {
         Command::Unstage,
     );
 
+
     // 'c' for commit (git commit)
     map.insert(
         KeyBinding::new(Char('c'), KeyModifiers::NONE),
@@ -253,10 +257,12 @@ fn default_normal_keymap() -> IndexMap<KeyBinding, Command> {
     );
 
     // 'b' for branch (create new branch)
+
     map.insert(
         KeyBinding::new(Char('b'), KeyModifiers::NONE),
         Command::CreateBranch,
     );
+
 
     // 't' for tag (create tag)
     map.insert(KeyBinding::new(Char('t'), KeyModifiers::NONE), Command::Tag);
@@ -297,6 +303,7 @@ fn default_normal_keymap() -> IndexMap<KeyBinding, Command> {
 
 fn default_action_keymap() -> IndexMap<KeyBinding, Command> {
     let mut map = IndexMap::new();
+
 
     // Keep all basic navigation in action mode
     map.insert(
@@ -367,12 +374,14 @@ fn default_action_keymap() -> IndexMap<KeyBinding, Command> {
     map.insert(
         KeyBinding::new(Char('G'), KeyModifiers::SHIFT),
         Command::GoToEnd,
+
     );
     map.insert(
         KeyBinding::new(Home, KeyModifiers::NONE),
         Command::GoToBeginning,
     );
     map.insert(KeyBinding::new(End, KeyModifiers::NONE), Command::GoToEnd);
+
 
     // UI toggles (same as normal mode)
     map.insert(
@@ -414,6 +423,7 @@ fn default_action_keymap() -> IndexMap<KeyBinding, Command> {
         Command::Stage,
     );
     map.insert(
+
         KeyBinding::new(Char('u'), KeyModifiers::NONE),
         Command::Unstage,
     );
@@ -498,7 +508,7 @@ fn default_action_keymap() -> IndexMap<KeyBinding, Command> {
         KeyBinding::new(Char('q'), KeyModifiers::NONE),
         Command::Exit,
     );
-
+      
     map
 }
 
@@ -665,8 +675,8 @@ pub fn parse_modifiers(mods: &[String]) -> Result<KeyModifiers, String> {
             "Shift" => km |= KeyModifiers::SHIFT,
             "Control" | "Ctrl" => km |= KeyModifiers::CONTROL,
             "Alt" => km |= KeyModifiers::ALT,
-            "Command" | "Meta" => km |= KeyModifiers::SUPER,
-            "" => (),
+            "Command" | "Meta" => km |= KeyModifiers::SUPER, // SUPER is used for Command on macOS
+            "" => (),                                        // ignore empty strings
             other => return Err(format!("Unknown modifier: {}", other)),
         }
     }
